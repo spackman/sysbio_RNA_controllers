@@ -1,0 +1,14 @@
+parameter,type,direct_open_loop,direct_closed_loop,indirect_open_loop,indirect_closed_loop
+alpha_X,enzyme,0.1,0.1,0.1,0.1
+alpha_Y,enzyme,0.001,0.001,0.001,0.001
+alpha_Y+,enzyme,1,1,1,1
+delta_X,enzyme,0.0005,0.0005,0.005,0.0005
+delta_Y,enzyme,0,0.0005,0.005,0.0005
+kappa,RNA,5.00E+06,5.00E+06,0,5.00E+06
+omega,RNA,1,5.00E+06,2.50E+06,2.50E+06
+nu,RNA,,1,1,1
+beta_A,enzyme,,,0.0001,0.0001
+delta_A,enzyme,,,0.00005,0.00005
+alpha_O,enzyme,0.001,0.001,0.001,0.001
+alpha_O+,enzyme,1,1,1,1
+delta_O,enzyme,0.002,0.002,0.002,0.002
