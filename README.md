@@ -1,5 +1,5 @@
 # Temperature Dependence of RNA Control Architecture Steady State Error
-A repository for the final project for Systems Biology (BIO530) at Colorado School of Mines  
+A repository for the final project for Systems Biology (BIO520) at Colorado School of Mines  
 
 The paper used to focus the project is:  
   
@@ -14,3 +14,9 @@ Agrawal, D. K.; Tang, X.; Westbrook, A.; Marshall, R.; Maxwell, C. S.; Lucks, J.
 References for the activation energies are taken from:  
   
 Becskei, A.; Rahaman, S. The Life and Death of RNA across Temperatures. Computational and Structural Biotechnology Journal 2022, 20, 4325–4336. https://doi.org/10.1016/j.csbj.2022.08.008.
+
+# GAME PLAN
+Here's the plan for Tuesday:
+1) Write a function that returns the solution to each controller architecture ODEs over time. We will simulate over 10 hours to reproduce the time based solution in Figure 1.
+The resulting equations will take the temperature and initial concentrations as inputs.
+2) Draft analysis code to compute the steady state error given the time series. This code will also make standardized plots.
