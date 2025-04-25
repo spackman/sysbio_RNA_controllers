@@ -7,7 +7,7 @@ Agrawal, D. K.; Tang, X.; Westbrook, A.; Marshall, R.; Maxwell, C. S.; Lucks, J.
 
 ### Temperature Dependence of Kinetic Parameters
 
-![params_plot](temp_dependence_of_params.png)
+![params_plot](plots/temp_dependence_of_params.png)
 
 *Figure 1. Temperature dependence on the kinetic parameters used in each control architecture. The reference temperature is taken to be 25C. The random range explored refers roughly to the parameter range explored by Agrawal et al. through random sampling of +/- 1 order of magnitude. The RNA denaturation window is set arbitrarily at 65C, experimentally determined values range from ~55-70C.*
 
