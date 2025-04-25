@@ -15,6 +15,24 @@ References for the activation energies are taken from:
   
 Becskei, A.; Rahaman, S. The Life and Death of RNA across Temperatures. Computational and Structural Biotechnology Journal 2022, 20, 4325–4336. https://doi.org/10.1016/j.csbj.2022.08.008.
 
+### Results  
+
+![full_solution](plots/full_ode_solutions.png)
+
+*Figure 2. Full solution to the system of ODES defined for each controller at initial conditions XYZ.*
+  
+![input_output_solution](plots/input_output_ode_solutions.png)
+
+*Figure 3. Controller response for each system of ODES defined for each controller at initial conditions XYZ. Compare to Agrawal et al. Figure 1 d-f.*
+
+![figure2_reproduction](plots/figure2_reproduction.png)
+
+*Figure 4. Reproduction of Agrawal Figure 2 a-b.*
+
+![temp_dependent_sse](plots/temp_dependent_sse.png)
+
+*Figure 5. Temperature Dependence of the Steady State Error.*
+
 # GAME PLAN
 Here's the plan for Tuesday:
 1) Write a function that returns the solution to each controller architecture ODEs over time. We will simulate over 10 hours to reproduce the time based solution in Figure 1.
