@@ -110,7 +110,7 @@ def dol_solution(conds):
     PY_plus0 = conds["PY_plus_init"]
     O0 = conds["O_init"]
     
-    parameters = rate(controller="direct_closed_loop", temperature_C=temp)
+    parameters = rate(controller="direct_open_loop", temperature_C=temp)
     
     t = np.linspace(0, conds["t_end"], conds["t_steps"])
     
@@ -192,7 +192,7 @@ def iol_solution(conds):
     PY_plus0 = conds["PY_plus_init"]
     O0 = conds["O_init"]
     
-    parameters = rate(controller="direct_closed_loop", temperature_C=temp)
+    parameters = rate(controller="indirect_open_loop", temperature_C=temp)
     
     t = np.linspace(0, conds["t_end"], conds["t_steps"])
     
