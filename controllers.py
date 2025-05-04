@@ -61,7 +61,13 @@ def rate(controller: str, temperature_C: float = 25) -> Dict[str, float]:
     parameters["scaled_value"] = parameters.apply(scale_row, axis=1)
 
     rate_at_temperature = dict(zip(parameters["parameter"], parameters["scaled_value"]))
+
+    for param in ["kappa", "omega"]:
+        # convert concentration dependent parameters to  1/ nM-s from 1 / M-s
+        # so that all concentrations can be in nM
+        rate_at_temperature[param] = rate_at_temperature[param] / 1E9
     return rate_at_temperature
+    
 
 def to_latex_label(param_name: str) -> str:
     """
@@ -117,7 +123,7 @@ def dol_solution(conds):
     def system(vars, t):
         X, Y, A, PY_plus, O = vars
 
-        dXdt = parameters["alpha_X"]*PX - parameters["delta_X"] - parameters["kappa"]*X*Y - parameters["omega"]*X*PY + parameters["nu"]*PY_plus
+        dXdt = parameters["alpha_X"]*PX - parameters["delta_X"]*X - parameters["kappa"]*X*Y - parameters["omega"]*X*PY + parameters["nu"]*PY_plus
         dYdt = parameters["alpha_Y"]*PY + parameters["alpha_Y+"]*PY_plus - parameters["delta_Y"]*Y - parameters["kappa"]*X*Y
         dAdt = 0
         dPY_plusdt = parameters["omega"]*X*PY - parameters["nu"]*PY_plus
@@ -127,6 +133,7 @@ def dol_solution(conds):
     initial_conditions = [X0, Y0, A0, PY_plus0, O0]
     
     solution = scipy.integrate.odeint(system, initial_conditions, t)
+    reference = parameters["alpha_O+"] * parameters["alpha_X"] / (parameters["delta_O"] * parameters["alpha_Y+"]) * PX
     
     response = pd.DataFrame({
         "time[s]": t,
@@ -135,6 +142,7 @@ def dol_solution(conds):
         "A": solution[:, 2],
         "PY_+": solution[:, 3],
         "O": solution[:, 4],
+        "reference": reference
     })
     
     return response
@@ -153,12 +161,12 @@ def dcl_solution(conds):
     
     parameters = rate(controller="direct_closed_loop", temperature_C=temp)
     
-    t = np.linspace(0, conds["t_end"], conds["t_steps"])
+    t = np.linspace(0, int(conds["t_end"]), int(conds["t_steps"]))
     
     def system(vars, t):
         X, Y, A, PY_plus, O = vars
 
-        dXdt = parameters["alpha_X"]*PX - parameters["delta_X"] - parameters["kappa"]*X*Y - parameters["omega"]*X*PY + parameters["nu"]*PY_plus
+        dXdt = parameters["alpha_X"]*PX - parameters["delta_X"]*X - parameters["kappa"]*X*Y - parameters["omega"]*X*PY + parameters["nu"]*PY_plus
         dYdt = parameters["alpha_Y"]*PY + parameters["alpha_Y+"]*PY_plus - parameters["delta_Y"]*Y - parameters["kappa"]*X*Y
         dAdt = 0
         dPY_plusdt = parameters["omega"]*X*PY - parameters["nu"]*PY_plus
@@ -168,7 +176,8 @@ def dcl_solution(conds):
     initial_conditions = [X0, Y0, A0, PY_plus0, O0]
     
     solution = scipy.integrate.odeint(system, initial_conditions, t)
-    
+    reference = parameters["alpha_O+"] * parameters["alpha_X"] / (parameters["delta_O"] * parameters["alpha_Y+"]) * PX
+
     response = pd.DataFrame({
         "time[s]": t,
         "X": solution[:, 0],
@@ -176,6 +185,8 @@ def dcl_solution(conds):
         "A": solution[:, 2],
         "PY_+": solution[:, 3],
         "O": solution[:, 4],
+        "reference": reference
+
     })
     
     return response
@@ -199,9 +210,9 @@ def iol_solution(conds):
     def system(vars, t):
         X, Y, A, PY_plus, O = vars
 
-        dXdt = parameters["alpha_X"]*PX - parameters["delta_X"] *X - parameters["kappa"]*X*Y
+        dXdt = parameters["alpha_X"]*PX - parameters["delta_X"]*X - parameters["kappa"]*X*Y
         dYdt = parameters["alpha_Y"]*PY + parameters["alpha_Y+"]*PY_plus - parameters["delta_Y"]*Y - parameters["kappa"]*X*Y
-        dAdt = parameters["beta_A"] *X - parameters["delta_A"] *A - parameters["omega"] *A *PY + parameters["nu"] * PY_plus
+        dAdt = parameters["beta_A"]*X - parameters["delta_A"]*A - parameters["omega"]*A*PY + parameters["nu"]*PY_plus
         dPY_plusdt = parameters["omega"]*A*PY - parameters["nu"]*PY_plus
         dOdt = parameters["alpha_O"]*PY + parameters["alpha_O+"]*PY_plus - parameters["delta_O"]*O
         return [dXdt, dYdt, dAdt, dPY_plusdt, dOdt]
@@ -209,7 +220,8 @@ def iol_solution(conds):
     initial_conditions = [X0, Y0, A0, PY_plus0, O0]
     
     solution = scipy.integrate.odeint(system, initial_conditions, t)
-    
+    reference = parameters["alpha_O+"] * parameters["alpha_X"] / (parameters["delta_O"] * parameters["alpha_Y+"]) * PX
+
     response = pd.DataFrame({
         "time[s]": t,
         "X": solution[:, 0],
@@ -217,6 +229,7 @@ def iol_solution(conds):
         "A": solution[:, 2],
         "PY_+": solution[:, 3],
         "O": solution[:, 4],
+        "reference" : reference
     })
     
     return response
@@ -235,7 +248,7 @@ def icl_solution(conds):
     
     parameters = rate(controller="indirect_closed_loop", temperature_C=temp)
     
-    t = np.linspace(0, conds["t_end"], conds["t_steps"])
+    t = np.linspace(0, int(conds["t_end"]), int(conds["t_steps"]))
     
     def system(vars, t):
         X, Y, A, PY_plus, O = vars
@@ -250,6 +263,8 @@ def icl_solution(conds):
     initial_conditions = [X0, Y0, A0, PY_plus0, O0]
     
     solution = scipy.integrate.odeint(system, initial_conditions, t)
+    reference = parameters["alpha_O+"] * parameters["alpha_X"] / (parameters["delta_O"] * parameters["alpha_Y+"]) * PX
+
     
     response = pd.DataFrame({
         "time[s]": t,
@@ -258,6 +273,7 @@ def icl_solution(conds):
         "A": solution[:, 2],
         "PY_+": solution[:, 3],
         "O": solution[:, 4],
+        "reference" : reference
     })
     return response
 
